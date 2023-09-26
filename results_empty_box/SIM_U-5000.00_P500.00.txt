@@ -1,0 +1,4 @@
+L = 25.600000 A
+N_cycles = 20000 , N_equil = 10000
+Pressure(bar),Loading(vSTP/v),Loading(N_avg)
+500.000000,648.280972,292.399014

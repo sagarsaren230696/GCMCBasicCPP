@@ -40,7 +40,7 @@ for i,u in enumerate(U0):
     ax.plot(dataFile["Pressure(bar)"].values/dataFile["Pressure(bar)"].values[-1],dataFile["Loading(vSTP/v)"].values,color=colors[i],label="{} kJ/mol".format(Q0[i]))
 ax.set_xlabel("Relative pressure (-)")
 ax.set_ylabel("Nitrogen uptake (cc(STP)/cc)")
-ax.legend(loc="best")
+ax.legend(loc='upper left',bbox_to_anchor=(1,1))
 plt.savefig(r"./results_empty_box_N2/uptake_profile.png",dpi=300)
 
 

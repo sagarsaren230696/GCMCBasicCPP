@@ -1,5 +1,6 @@
 # Scale and replicate FCC lattice given a site-to-site distance d and LJ cutoff rc
 
+from telnetlib import NAOCRD
 import numpy as np
 import sys
 verbose = True
@@ -16,9 +17,10 @@ r_c = 12.8 # LJ cutoff radius
 ###
 f = open('fcc.cssr', 'r')
 L = float(f.readline().split()[0])
+# print(L)
 f.readline()
 natoms = int(f.readline().split()[0])
-
+# print(natoms)
 f.readline()  # waste line
 # fractional coords in .cssr
 abc = np.zeros((3, natoms))
@@ -40,6 +42,7 @@ if verbose:
 #    Scale FCC lattice to obtain a given site-to-site distance
 ###
 L = L * site_site_distance
+# print(L)
 if verbose:
     print ("New primitive box length =", L)
     print ("\tTo satisfy d =", site_site_distance)
@@ -50,7 +53,7 @@ if verbose:
 rep_factor = int(2.0 * r_c / L) + 1  # ensure twice the cutoff
 L_new = L * rep_factor
 natoms_new = natoms * rep_factor ** 3
-
+print(rep_factor,L_new,natoms_new)
 if verbose:
     print ("Replicating primitive FCC lattice %d times." % rep_factor)
 

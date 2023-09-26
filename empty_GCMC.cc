@@ -68,6 +68,42 @@ double GuestGuestEnergy(int which_ch4, std::vector<Particle> methanes) {
     return E_gg;
 }
 
+double SteelePotential(double z_d){
+    // Calculate potential value
+    eps_hg = 28 // K
+    sigma_hg = 3.4 //A
+    layer_sep = 3.35 //A
+    
+    return 0
+}
+
+double HostGuestEnergy(int which_ch4, std::vector<Particle> methanes) {
+    // Compute host-guest energy of particle id which_ch4 assuming a graphene structure and z distance dependent interaction potential with Steele potential formula
+    double E_hg = 0.0; //host-guest energy
+    for (int i = 0; i < methanes.size(); i++) {
+        
+        // distances in each coordinate
+        double x_d = methanes[i].x - methanes[which_ch4].x;
+        double y_d = methanes[i].y - methanes[which_ch4].y;
+        double z_d = methanes[i].z - methanes[which_ch4].z;
+        
+        // apply the nearest image convention for PBC
+        x_d = x_d - L * round (x_d / L);
+        y_d = y_d - L * round (y_d / L);
+        z_d = z_d - L * round (z_d / L);
+        
+        // distance squared
+        double r2 = x_d*x_d + y_d*y_d + z_d*z_d;
+        
+        if (r2 <= r_c2) {
+            // if within cutoff, add energy according to LJ potential
+            double sigovrr6 = pow(sig_CH4 * sig_CH4 / r2, 3);
+            E_hg += 4.0 * eps_CH4 * sigovrr6 * (sigovrr6 - 1.0);
+        }
+    }
+    return E_hg;
+}
+
 int main(int argc, char *argv[]) {
     //
     // Check for correct usage, then take input arguments
@@ -133,6 +169,13 @@ int main(int argc, char *argv[]) {
         fprintf(outfile, "Pressure(bar),Loading(vSTP/v),Loading(N_avg)\n");
     }
     
+    // Plot the equilibration
+    // char equilibrationDataName[1024];
+    // sprintf(equilibrationDataName, "./eqDataFile.csv");
+    // FILE *equilibrationDataFile;
+    // equilibrationDataFile = fopen(equilibrationDataName,"w");
+    // fprintf(equilibrationDataFile, "SampleNo,Navg\n");
+
     // Compute isotherm, N(P)
     for (int i_P = 0; i_P < pressures.size(); i_P++) {
         // vector for storing methane molecule positions
@@ -161,7 +204,7 @@ int main(int argc, char *argv[]) {
                     N_avg += N_ch4; //divide by N_samples later
                     N_samples++;
                 }
-          
+                
                 // Choose insertion, deletion, or translation
                 int which_move = movepicker(generator);
 
@@ -204,7 +247,6 @@ int main(int argc, char *argv[]) {
                     decltype(uniformint.param()) new_range(0, N_ch4 - 1);
                     uniformint.param(new_range);
                     int which_ch4 = uniformint(generator);
-
                     if (verbose) 
                         printf("DEBUG: trying deletion of particle %d\n",
                             which_ch4);
@@ -282,6 +324,7 @@ int main(int argc, char *argv[]) {
                     }
                 } // end translation
             } // end inner cycle loop
+            // fprintf(equilibrationDataFile,"%d,%d\n",cycle,N_avg/((double) N_samples));
         } // end outer cycle loop
         printf("\tDone. %d/%d MC moves accepted.\n", N_accept, MC_counter);
         printf("\t%d samples taken.\n", N_samples);

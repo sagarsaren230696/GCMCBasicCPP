@@ -124,7 +124,9 @@ int main(int argc, char *argv[])  {
     std::string line;
     getline(fcc_file, line);
     std::istringstream input(line);
+    std::cout << "first line is " << line << "\n";
     input >> L;
+    std::cout << "L is " << L << "\n";
     if (L < 2 * r_c) 
         printf("Cell dims must be greater than 2*r_c for periodic BC implementation");
     
@@ -133,9 +135,11 @@ int main(int argc, char *argv[])  {
     // count sites
     int N_sites; // number of sites in unit cell
     getline(fcc_file, line);
+    std::cout << "second line is " << line << "\n";
     input.str(line); input.clear();
     input >> N_sites;
-    
+    std::cout << "N_sites is " << N_sites << "\n";
+
     if (verbose)
         printf("Lattice has %d sites. L = %f\n", N_sites, L);
 
@@ -173,11 +177,31 @@ int main(int argc, char *argv[])  {
 
     // pressures of isotherm (actually, fugacities, computed by PREOS)
     // PREOS: https://github.com/CorySimon/PREOS
-    std::vector<double> pressures(4); // (Pa)
-    pressures[0] = 0.998 * 100000; 
-    pressures[1] = 5.726 * 100000; 
-    pressures[2] = 32.452 * 100000; 
-    pressures[3] = 56.7 * 100000;
+    std::vector<double> pressures(50); // (Pa)
+    // pressures[0] = 0.998 * 100000; 
+    // pressures[1] = 5.726 * 100000; 
+    // pressures[2] = 32.452 * 100000; 
+    // pressures[3] = 56.7 * 100000;
+
+    char pressure_filename[512];
+    sprintf(pressure_filename, "fugacities.txt");
+    printf("Loading fugacities from %s\n", pressure_filename);
+    std::ifstream pressure_file(pressure_filename);
+    if (pressure_file.fail()) {
+        printf("Could not import %s\n", pressure_filename);
+        exit(EXIT_FAILURE);
+    }
+    std::string pline;
+    // getline(pressure_file, pline);
+    std::istringstream p_input(pline);
+    for (int i=0;i<50;i++){
+        getline(pressure_file, pline);
+        p_input.str(pline); p_input.clear();
+        double p;
+        p_input >> p;
+        pressures[i] = p;
+        printf("%f\n",p);
+    }
     
     // storing statistics N_avg methane as fnctn of P, the isotherm.
     std::vector<double> N_of_P(pressures.size(), 0.0); // initialize at 0.0

@@ -1,0 +1,8 @@
+U_0 = -250.000000 A , d_sites = 8.000000 A
+N_sites = 108. L = 33.936000 A
+N_trials = 216000 , N_equil = 43200
+Pressure(bar),Loading(vSTP/v),Loading(Molecules_per_UC),LangmuirLoading(Molecules_per_UC)
+99800.000000,2.017,2.119,2.150
+572600.000000,10.907,11.459,11.272
+3245200.000000,43.481,45.685,42.958
+5670000.000000,58.488,61.453,57.859
